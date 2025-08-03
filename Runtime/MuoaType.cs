@@ -7,4 +7,5 @@ public enum MuoaType
     String, 
     Array,
     Function,
+    Module
 }

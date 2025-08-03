@@ -39,4 +39,7 @@ public interface IMuoaValue
     
     public IMuoaValue Join(IMuoaValue other) =>
         this.InvalidBinaryOp(other, "join");
+    
+    public IMuoaValue Negate() =>
+        this.InvalidUnaryOp("negate");
 }

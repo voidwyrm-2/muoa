@@ -5,8 +5,9 @@ namespace Muoa.Runtime;
 
 public class Interpreter(Scope? scope, Dictionary<Lexer.Token.Type, IMuoaFunction> builtins)
 {
-    private Scope _scope = scope ?? new Scope(null, false);
     private readonly Dictionary<Lexer.Token.Type, IMuoaFunction> _builtins = builtins;
+    
+    public Scope Scope { get; private set; } = scope ?? new Scope(null, false);
 
     public Interpreter(Scope? scope = null) : this(scope, Builtins.GetBuiltins()) { }
 
@@ -19,31 +20,31 @@ public class Interpreter(Scope? scope, Dictionary<Lexer.Token.Type, IMuoaFunctio
                 switch (node)
                 {
                     case NumberNode num:
-                        _scope.Push(new MuoaNumber(float.Parse(num.value.lit)));
+                        Scope.Push(new MuoaNumber(float.Parse(num.value.lit)));
                         break;
                     case AtomNode atom:
-                        _scope.Push(new MuoaAtom(atom.value.lit));
+                        Scope.Push(new MuoaAtom(atom.value.lit));
                         break;
                     case StringNode str:
-                        _scope.Push(new MuoaString(str.value.lit));
+                        Scope.Push(new MuoaString(str.value.lit));
                         break;
                     case ArrayNode array:
                     {
-                        _scope = new Scope(_scope, false);
+                        Scope = new Scope(Scope, false);
 
                         var result = Eval(array.nodes);
 
-                        _scope = _scope.parent!;
+                        Scope = Scope.parent!;
 
                         var arrayResult = result.Reverse().ToArray();
-                        _scope.Push(new MuoaArray(arrayResult!));
+                        Scope.Push(new MuoaArray(arrayResult!));
                     }
                         break;
                     case FunctionNode func:
-                        _scope.Push(new CompositeFunction(func));
+                        Scope.Push(new CompositeFunction(func));
                         break;
                     case OperationNode op:
-                        _builtins[op.op.type].Call(new CallingContext(_builtins, _scope));
+                        _builtins[op.op.type].Call(new CallingContext(_builtins, Scope));
                         break;
                 }
             }
@@ -53,6 +54,6 @@ public class Interpreter(Scope? scope, Dictionary<Lexer.Token.Type, IMuoaFunctio
             }
         }
         
-        return _scope.stack.ToArray();
+        return Scope.stack.ToArray();
     }
 }
