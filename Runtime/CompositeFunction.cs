@@ -17,6 +17,15 @@ public class CompositeFunction(int input, int output, INode[] nodes) : IMuoaFunc
     public void Call(CallingContext ctx)
     {
         Scope innerScope = ctx.direct ? ctx.scope : new Scope(ctx.scope, true);
+
+        var inputs = new IMuoaValue[input];
+
+        for (int i = 0; i < input; i++)
+            inputs[i] = ctx.scope.Pop();
+
+        foreach (IMuoaValue value in inputs.Reverse())
+            innerScope.Push(value);
+        
         Interpreter interpreter = new(innerScope, ctx.builtins);
 
         interpreter.Eval(nodes);

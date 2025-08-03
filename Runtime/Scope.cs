@@ -37,9 +37,7 @@ public class Scope(Scope? parent, bool function)
         var newArr = new IMuoaValue[expected.Length];
 
         for (int i = 0; i < expected.Length; i++)
-        {
             newArr[i] = stack.Pop();
-        }
 
         return newArr;
     }
@@ -55,7 +53,7 @@ public class Scope(Scope? parent, bool function)
         throw new RuntimeException($"'{name}' does not exist");
     }
 
-    public void Set(string name, IMuoaValue value)
+    public void Bind(string name, IMuoaValue value)
     {
         if (!_bindings.TryAdd(name, value))
             throw new RuntimeException($"'{name}' already exists");
