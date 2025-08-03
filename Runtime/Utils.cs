@@ -7,6 +7,9 @@ internal static class Utils
     
     internal static IMuoaValue InvalidBinaryOp(this IMuoaValue value, IMuoaValue other, string name) =>
         throw new RuntimeException($"Cannot use operation '{name}' on types {value.Type()} and {other.Type()}");
+    
+    internal static IMuoaValue InvalidIndexingOp(this IMuoaValue value, IMuoaValue other) =>
+        throw new RuntimeException($"Cannot index into type {value.Type()} with type {other.Type()}");
 
     internal static void ExpectSignature(this IMuoaFunction func, int input, int output)
     {

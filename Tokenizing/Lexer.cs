@@ -22,7 +22,7 @@ public class Lexer
             Number,
             String,
             Atom,
-            Reduce,
+            Fold,
             Length,
             Index,
             Swap,
@@ -57,7 +57,7 @@ public class Lexer
                 Type.Number => lit,
                 Type.String => $"\"{lit}\"",
                 Type.Atom => $"'{lit}",
-                Type.Reduce => ";",
+                Type.Fold => ";",
                 Type.Length => "#",
                 Type.Index => "@",
                 Type.Swap => ":",
@@ -161,7 +161,7 @@ public class Lexer
 
     private static Token.Type? GetTokenType(char ch) => ch switch
     {
-        ';' => Token.Type.Reduce,
+        ';' => Token.Type.Fold,
         '#' =>  Token.Type.Length,
         '@' =>  Token.Type.Index,
         ':' =>  Token.Type.Swap,

@@ -17,7 +17,7 @@ public class MuoaArray(IMuoaValue[] value) : IMuoaValue, IEnumerable<IMuoaValue>
 
     public IMuoaValue Length() => new MuoaNumber(_value.Length);
 
-    public IMuoaValue Reduce(CallingContext ctx, IMuoaFunction fun)
+    public IMuoaValue Fold(CallingContext ctx, IMuoaFunction fun)
     {
         fun.ExpectSignature(2, 1);
         

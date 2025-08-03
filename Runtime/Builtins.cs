@@ -25,13 +25,13 @@ public static class Builtins
         ctx.scope.Push(items[0].Length());
     }
     
-    private static void Reduce(CallingContext ctx)
+    private static void Fold(CallingContext ctx)
     {
         var items = ctx.scope.GetExpect([MuoaType.Function, MuoaType.Array]);
 
         IMuoaFunction fun = (items[0] as IMuoaFunction)!;
         
-        ctx.scope.Push(items[1].Reduce(ctx, fun));
+        ctx.scope.Push(items[1].Fold(ctx, fun));
     }
     
     private static void Dup(CallingContext ctx)
@@ -58,7 +58,7 @@ public static class Builtins
         map[Token.Type.Div] = new BuiltinFunction(2, 1, Builtins.Div);
         
         map[Token.Type.Length] = new BuiltinFunction(1, 1, Builtins.Length);
-        map[Token.Type.Reduce] = new BuiltinFunction(2, 1, Builtins.Reduce);
+        map[Token.Type.Fold] = new BuiltinFunction(2, 1, Builtins.Fold);
         
         map[Token.Type.Dup] = new BuiltinFunction(1, 2, Builtins.Dup);
         map[Token.Type.Swap] = new BuiltinFunction(1, 2, Builtins.Swap);

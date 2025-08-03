@@ -14,9 +14,9 @@ public interface IMuoaValue
         this.InvalidUnaryOp("length");
     
     public IMuoaValue Index(IMuoaValue index) =>
-        this.InvalidUnaryOp("index");
+        this.InvalidIndexingOp(index);
 
-    public IMuoaValue Reduce(CallingContext ctx, IMuoaFunction fun) =>
+    public IMuoaValue Fold(CallingContext ctx, IMuoaFunction fun) =>
         this.InvalidUnaryOp("reduce");
     
     public IMuoaValue Add(IMuoaValue other) =>
