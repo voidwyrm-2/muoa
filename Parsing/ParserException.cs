@@ -1,3 +1,6 @@
 namespace Muoa.Parsing;
 
-public class ParserException(string msg) : MuoaException(msg);
+public class ParserException(string msg) : MuoaException(msg)
+{
+    public ParserException() : this("") { }
+}

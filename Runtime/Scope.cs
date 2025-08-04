@@ -58,4 +58,6 @@ public class Scope(Scope? parent, bool function)
         if (!_bindings.TryAdd(name, value))
             throw new RuntimeException($"'{name}' already exists");
     }
+
+    public MuoaModule ToModule() => new(_bindings);
 }

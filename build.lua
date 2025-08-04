@@ -34,8 +34,6 @@ end
 
 local builder = createBuilder()
 
-builder.add("dotnet build")
-
 builder.add("rm -rf pkg")
 builder.add("mkdir pkg")
 
@@ -48,7 +46,7 @@ local targets = {
 for ost, arches in pairs(targets) do
     for _, arch in pairs(arches) do
         local pair = ost .. "-" .. arch
-        local bin = "bin/%s/" .. pair
+        local bin = "bin/" .. pair .. "/"
 
         builder.setFormatter(function(cmd)
             return "Running '" .. cmd .. "' for " .. pair
@@ -60,10 +58,10 @@ for ost, arches in pairs(targets) do
         local cmdMove = string.format("mv %s .", bin)
         builder.add(cmdMove)
 
-        local cmdZip = string.format("zip -r pkg/%s %s", pair, pair)
+        local cmdZip = string.format("zip -r pkg/%s/ %s", pair, pair)
         builder.add(cmdZip)
 
-        builder.add("rm -rf " .. pair)
+        builder.add("rm -rf " .. pair .. "/")
     end
 end
 

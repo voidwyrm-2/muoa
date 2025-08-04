@@ -11,4 +11,6 @@ public class MuoaString(string value) : IMuoaValue
     public IMuoaValue Default() => new MuoaString("");
 
     public object Value() => _value;
+
+    public override string ToString() => $"\"{_value}\"";
 }

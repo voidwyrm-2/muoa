@@ -7,7 +7,7 @@ namespace Muoa;
 
 internal class Program
 {
-    private const string VERSION = "0.2.17";
+    private const string VERSION = "0.3.0";
     
     public static int Main(string[] args) =>
         CommandLineApplication.Execute<Program>(args);
@@ -55,7 +55,11 @@ internal class Program
                     Console.WriteLine(node);
             }
 
-            Interpreter interpreter = new();
+            Scope scope = new(null, false);
+
+            Stdlib.AddToScope(scope);
+
+            Interpreter interpreter = new(scope);
 
             var result = interpreter.Eval(nodes);
 

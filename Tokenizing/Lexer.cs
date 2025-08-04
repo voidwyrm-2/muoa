@@ -87,7 +87,7 @@ public class Lexer
             };
         }
         
-        public void Error(string msg)
+        public void Error<T>(string msg) where T : MuoaException, new()
         {
             StringBuilder builder = new($"{msg}\n{ctx.file}:{ln}:{col}\n{ctx.line}\n");
 
@@ -99,7 +99,7 @@ public class Lexer
             for (int i = 1; i < len && i < ctx.line.Length; i++)
                 builder.Append('~');
             
-            throw new MuoaException(builder.ToString());
+            throw (T)Activator.CreateInstance(typeof(T), builder.ToString())!;
         }
 
         public override string ToString() => $"<{type}, '{lit}', {idx} ({len}), {col}, {ln}, '{ctx.file}'>";
@@ -156,7 +156,7 @@ public class Lexer
     private void Throw(string msg, int len = 1)
     {
         Token t = new(Token.Type.Add, GetCtx(), "", _idx, len, _ln, _col);
-        t.Error(msg); 
+        t.Error<LexerException>(msg); 
     }
 
     private static Token.Type? GetTokenType(char ch) => ch switch
@@ -217,7 +217,7 @@ public class Lexer
         if (str.Length == 0)
         {
             Token t = new(Token.Type.Atom, new Token.Ctx(_file, origLine, origLineStart), str.ToString(), startidx, str.Length, startln, startcol);
-            t.Error("Atoms cannot contain zero characters");
+            t.Error<LexerException>("Atoms cannot contain zero characters");
         }
         
         return new Token(Token.Type.Atom, new Token.Ctx(_file, origLine, origLineStart), str.ToString(), startidx, str.Length, startln, startcol);
@@ -303,7 +303,7 @@ public class Lexer
         if (Eof || Ch != '"')
         {
             Token t = new(Token.Type.String, new Token.Ctx(_file, origLine, origLineStart), str.ToString(), startidx, str.Length, startln, startcol);
-            t.Error("Unterminated string literal");
+            t.Error<LexerException>("Unterminated string literal");
         }
 
         Advance();

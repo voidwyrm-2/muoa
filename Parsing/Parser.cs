@@ -10,19 +10,19 @@ public class Parser(Token[] tokens)
     private int _idx;
 
     private static void ThrowUnexpectedToken(Token tok) =>
-        tok.Error($"Unexpected token {tok.Literal()}");
+        tok.Error<ParserException>($"Unexpected token {tok.Literal()}");
 
     private INode ParseFunction(Token parent)
     {
         _idx++;
 
         if (_idx >= tokens.Length)
-            tokens.Last().Error($"Unexpected function signature, but found EOL instead");
+            tokens.Last().Error<ParserException>($"Unexpected function signature, but found EOL instead");
         
         Token tok = tokens[_idx];
         
         if (tok.type != Token.Type.Number)
-            tok.Error($"Unexpected function signature, but found '{tok.Literal()}' instead");
+            tok.Error<ParserException>($"Unexpected function signature, but found '{tok.Literal()}' instead");
 
         _idx++;
         
@@ -68,7 +68,7 @@ public class Parser(Token[] tokens)
             INode node = tok.type switch
             {
                 Token.Type.Number => new NumberNode(tok),
-                Token.Type.String => new NumberNode(tok),
+                Token.Type.String => new StringNode(tok),
                 Token.Type.Atom => new AtomNode(tok),
                 Token.Type.ParenLeft => ParseFunction(tok),
                 Token.Type.BracketLeft => ParseArray(tok),

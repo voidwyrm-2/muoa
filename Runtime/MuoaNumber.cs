@@ -26,6 +26,13 @@ public class MuoaNumber(float value) : IMuoaValue
         _ => this.InvalidBinaryOp(other, "sub")
     };
     
+    public IMuoaValue Mul(IMuoaValue other) => other switch
+    {
+        MuoaNumber num => new MuoaNumber(_value * num._value),
+        MuoaArray arr => new MuoaArray(arr.Select(item => item.Mul(this)).ToArray()),
+        _ => this.InvalidBinaryOp(other, "mul")
+    };
+    
     public IMuoaValue Div(IMuoaValue other) => other switch
     {
         MuoaNumber num => new MuoaNumber(_value / num._value),

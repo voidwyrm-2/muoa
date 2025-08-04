@@ -5,8 +5,6 @@ namespace Muoa.Runtime;
 
 public class Interpreter(Scope? scope, Dictionary<Lexer.Token.Type, IMuoaFunction> builtins)
 {
-    private readonly Dictionary<Lexer.Token.Type, IMuoaFunction> _builtins = builtins;
-    
     public Scope Scope { get; private set; } = scope ?? new Scope(null, false);
 
     public Interpreter(Scope? scope = null) : this(scope, Builtins.GetBuiltins()) { }
@@ -44,13 +42,13 @@ public class Interpreter(Scope? scope, Dictionary<Lexer.Token.Type, IMuoaFunctio
                         Scope.Push(new CompositeFunction(func));
                         break;
                     case OperationNode op:
-                        _builtins[op.op.type].Call(new CallingContext(_builtins, Scope));
+                        builtins[op.op.type].Call(new CallingContext(builtins, Scope));
                         break;
                 }
             }
             catch (MuoaException e)
             {
-                node.GetToken().Error(e.Message);
+                node.GetToken().Error<RuntimeException>(e.Message);
             }
         }
         
