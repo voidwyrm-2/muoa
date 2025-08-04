@@ -1,8 +1,8 @@
 namespace Muoa.Runtime;
 
-public class MuoaNumber(float value) : IMuoaValue
+public class MuoaNumber(double value) : IMuoaValue
 {
-    private readonly float _value = value;
+    private readonly double _value = value;
     
     public MuoaType Type() => MuoaType.Number;
 

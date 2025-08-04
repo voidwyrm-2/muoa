@@ -86,7 +86,7 @@ public class Lexer
                 _ => throw new UnreachableException($"with {type} of Type"),
             };
         }
-        
+
         public void Error<T>(string msg) where T : MuoaException, new()
         {
             StringBuilder builder = new($"{msg}\n{ctx.file}:{ln}:{col}\n{ctx.line}\n");

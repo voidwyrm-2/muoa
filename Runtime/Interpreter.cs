@@ -18,7 +18,7 @@ public class Interpreter(Scope? scope, Dictionary<Lexer.Token.Type, IMuoaFunctio
                 switch (node)
                 {
                     case NumberNode num:
-                        Scope.Push(new MuoaNumber(float.Parse(num.value.lit)));
+                        Scope.Push(new MuoaNumber(double.Parse(num.value.lit)));
                         break;
                     case AtomNode atom:
                         Scope.Push(new MuoaAtom(atom.value.lit));
