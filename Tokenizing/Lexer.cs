@@ -27,6 +27,7 @@ public class Lexer
             Index,
             Swap,
             Dup,
+            Over,
             Drop,
             Equal,
             NotEqual,
@@ -47,7 +48,8 @@ public class Lexer
             Bind,
             Slice,
             Join,
-            Pull
+            Pull,
+            Switch
         }
 
         public string Literal()
@@ -57,11 +59,12 @@ public class Lexer
                 Type.Number => lit,
                 Type.String => $"\"{lit}\"",
                 Type.Atom => $"'{lit}",
-                Type.Fold => ";",
+                Type.Fold => "f",
                 Type.Length => "#",
                 Type.Index => "@",
                 Type.Swap => ":",
                 Type.Dup => ".",
+                Type.Over => ",",
                 Type.Drop => "_",
                 Type.Equal => "=",
                 Type.NotEqual => "~",
@@ -83,6 +86,7 @@ public class Lexer
                 Type.Slice => "$",
                 Type.Join => "|",
                 Type.Pull => "?",
+                Type.Switch => "s",
                 _ => throw new UnreachableException($"with {type} of Type"),
             };
         }
@@ -161,11 +165,12 @@ public class Lexer
 
     private static Token.Type? GetTokenType(char ch) => ch switch
     {
-        ';' => Token.Type.Fold,
+        'f' => Token.Type.Fold,
         '#' =>  Token.Type.Length,
         '@' =>  Token.Type.Index,
         ':' =>  Token.Type.Swap,
         '.' =>  Token.Type.Dup,
+        ',' =>  Token.Type.Over,
         '_' =>  Token.Type.Drop,
         '=' =>  Token.Type.Equal,
         '~' =>  Token.Type.NotEqual,
@@ -186,7 +191,8 @@ public class Lexer
         '&' => Token.Type.Bind,
         '$' => Token.Type.Slice,
         '|' => Token.Type.Join,
-        '?' => Token.Type.Pull, 
+        '?' => Token.Type.Pull,
+        's' => Token.Type.Switch,
         _ => null,
     };
 

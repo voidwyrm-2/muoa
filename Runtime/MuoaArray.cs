@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics;
 
 namespace Muoa.Runtime;
 
@@ -35,6 +36,13 @@ public class MuoaArray(IMuoaValue[] value) : IMuoaValue, IEnumerable<IMuoaValue>
 
         return accScope.Pop();
     }
+    
+    public bool Equals(IMuoaValue? other) => other switch
+    {
+        null => throw new UnreachableException("null should not be passed to IMuoaValue::Equals"),
+        MuoaArray arr => this.Zip(arr).All(tup => tup.First.Equals(tup.Second)),
+        _ => _value.All(item => item.Equals(other))
+    };
 
     public IEnumerator<IMuoaValue> GetEnumerator() => ((IEnumerable<IMuoaValue>)_value).GetEnumerator();
 

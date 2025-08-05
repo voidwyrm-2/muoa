@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace Muoa.Runtime;
 
 internal static class Utils
@@ -18,4 +20,10 @@ internal static class Utils
         if (input != fin || output != fout)
             throw new RuntimeException($"Expected function with sigature {input}.{output}, but found signature {fin}.{fout}");
     }
+    
+    internal static bool DefaultValueEquals(IMuoaValue? other) => other switch
+    {
+        null => throw new UnreachableException("null should not be passed to IMuoaValue::Equals"),
+        _ => false
+    };
 }

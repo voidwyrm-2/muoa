@@ -4,6 +4,10 @@ namespace Muoa.Runtime;
 
 public class CompositeFunction(int input, int output, INode[] nodes) : IMuoaFunction
 {
+    public CompositeFunction(FunctionNode node) : this(node.input, node.output, node.nodes) { }
+    
+    public (int, int) Signature() => (input, output);
+    
     public MuoaType Type() => MuoaType.Function;
 
     public IMuoaValue Copy() => this;
@@ -11,8 +15,6 @@ public class CompositeFunction(int input, int output, INode[] nodes) : IMuoaFunc
     public IMuoaValue Default() => new CompositeFunction(0, 0, []);
 
     public object Value() => nodes;
-
-    public CompositeFunction(FunctionNode node) : this(node.input, node.output, node.nodes) { }
     
     public void Call(CallingContext ctx)
     {
@@ -36,7 +38,7 @@ public class CompositeFunction(int input, int output, INode[] nodes) : IMuoaFunc
             ctx.scope.Push(innerScope.Pop());
     }
 
-    public (int, int) Signature() => (input, output);
+    public bool Equals(IMuoaValue? other) => Utils.DefaultValueEquals(other);
 
     public override string ToString() => $"<composite function with signature {input}.{output}>";
 }

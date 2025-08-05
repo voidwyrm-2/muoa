@@ -2,11 +2,11 @@
 
 ## Introduction
 
-Muoa, pronounced "mu-ya", is a very minimal stack-based array programming language based primarily on Uiua.
+Muoa, pronounced "mu-ya", is a very minimal stack-based array programming language based primarily on [Uiua](https://www.uiua.org).
 
 Muoa is unique from other array languages in that it exclusively uses ASCII characters.
 
-This is version 1 of the language specification.
+This is version 2 of the language specification.
 
 ## Terms
 
@@ -21,7 +21,7 @@ All data types are passed by value unless otherwise stated and all of them are f
 *Number* is a 64-bit floating point number.
 They are formatted using the host language's built-in number to string function.
 
-*Atom* is a pass-by-reference singleton, and separate instances of the same atom are equal (e.g. `'abs == 'abs`).
+*Atom* is a pass-by-reference singleton, and separate instances of the same atom are equal (e.g. `'abs == 'abs == true`).
 Atoms are declared with `'`, e.g. `'atom`.
 They are formatted as `'[content]`.
 
@@ -62,17 +62,19 @@ Some operations may have alternate versions that do different things and/or take
 - `~` - Not Equal - `{ a b -> a != b }` - Takes in two values, checks their inequality, then outputs the result.
 - `>` - Less Than - `{ a b -> a > b }` - Takes in two values, compares them, then outputs the result.
 - `<` - Greater Than - `{ a b -> a == b }` - Takes in two values, compares them, then outputs the result.
-- `.` - Dup - `{ a -> a a }` - Takes in a value and outputs two of it.
 - `:` - Swap - `{ a b -> b a }` - Takes in two values and outputs them in reverse order.
+- `.` - Dup - `{ a -> a a }` - Takes in a value and outputs two of it.
+- `,` - Over - `{ a b -> a b a }` - Copies the second from top item to the top of the stack.
 - `_` - Drop - `{ a -> }` - Takes in a value and outputs nothing.
-- `;` - Fold - `{ [...] fun -> b }` - Takes in an array and a folding function, applies the function to the array, and outputs the result.
+- `f` - Fold - `{ [...] fun -> b }` - Takes in an array and a folding function, applies the function to the array, and outputs the result.
 - `#` - Length - `{ [...] -> [...].Length }` - Takes in an array and outputs its length.
 - `@` - Index - `{ a b -> a[b] }` - Takes in values A and B, then indexes into B using A.
 - `$` - Slice - `{ [...] a b -> [...][a:b] }` - Takes in an array and numbers A and B, slices into the array with A and B in the form of `array[A:B]`, then outputs the result.
 - `&` - Bind - `{ a atom -> }` - Takes in value A and atom B, then creates a binding[^3] of B containing A.
 - `!` - Execute - `{ fun -> fun() }` - Takes in a function and calls it.
 - `!` - Execute - `{ atom -> a }` - Takes in an atom, and gets the binding assigned to it in the current scope; if it can't be found in the current scope, it searches outer scopes recursively.
-- `?` - Pull/Hook - `{ -> a }` - Takes a value from the surrounding scope's stack, and pushes it onto the current scope's stack
+- `?` - Pull/Hook - `{ -> a }` - Takes a value from the surrounding scope's stack, and pushes it onto the current scope's stack.
+- `s` - Switch - `{ num [...fun] -> }` - Takes in a number N and array Arr, indexes into Arr with N, then calls the result.
 
 ## Standard Library
 
@@ -82,7 +84,9 @@ They are usually called with `[atom] !!`, e.g. `'rand !!`
 
 They use the same notation as the operations.
 
+- `print` - `{ a -> }` - Takes in one value then prints it with a newline.
 - `import` - `{ str -> mod }` - Reads and interprets a file, captures its global binds into a module, then returns it.
+- `assert` - `{ num -> }` - Takes in a number then causes an error if the number is zero.
 
 ## Footnotes
 

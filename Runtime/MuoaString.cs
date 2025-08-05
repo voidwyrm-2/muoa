@@ -14,6 +14,12 @@ public class MuoaString(string value) : IMuoaValue, IEnumerable<byte>
     public IMuoaValue Default() => new MuoaString("");
 
     public object Value() => _value;
+    
+    public bool Equals(IMuoaValue? other) => other switch
+    {
+        MuoaString str => _value == str._value,
+        _ => Utils.DefaultValueEquals(other)
+    };
 
     public IEnumerator<byte> GetEnumerator() => (IEnumerator<byte>)Encoding.ASCII.GetBytes(_value).GetEnumerator();
 

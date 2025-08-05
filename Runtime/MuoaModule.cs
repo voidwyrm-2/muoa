@@ -15,6 +15,8 @@ public class MuoaModule(Dictionary<string, IMuoaValue> inner) : IMuoaValue
         MuoaAtom atom => inner[(atom.Value() as string)!],
         _ => this.InvalidIndexingOp(index)
     };
+    
+    public bool Equals(IMuoaValue? other) => Utils.DefaultValueEquals(other);
 
     public override string ToString() => $"<module with {inner.Count} entries>";
 }

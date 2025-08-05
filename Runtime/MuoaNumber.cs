@@ -40,5 +40,11 @@ public class MuoaNumber(double value) : IMuoaValue
         _ => this.InvalidBinaryOp(other, "div")
     };
 
+    public bool Equals(IMuoaValue? other) => other switch
+    {
+        MuoaNumber num => Math.Abs(_value - num._value) < 0.001,
+        _ => Utils.DefaultValueEquals(other)
+    };
+
     public override string ToString() => $"{_value}";
 }

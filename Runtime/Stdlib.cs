@@ -5,6 +5,13 @@ namespace Muoa.Runtime;
 
 public static class Stdlib
 {
+    private static void Print(CallingContext ctx)
+    {
+        var items = ctx.scope.GetExpect([null]);
+        
+        Console.WriteLine(items[0].Value());
+    }
+    
     public static void Import(CallingContext ctx)
     {
         var items = ctx.scope.GetExpect([MuoaType.String]);
@@ -38,8 +45,29 @@ public static class Stdlib
         ctx.scope.Push(module);
     }
 
+    private static Action<CallingContext> CreateAssert()
+    {
+        int count = 1;
+
+        return MuoaAssert;
+        
+        void MuoaAssert(CallingContext ctx)
+        {
+            var items = ctx.scope.GetExpect([MuoaType.Number]);
+
+            if ((double)items[0].Value() == 0)
+                throw new RuntimeException($"test {count} failed");
+            
+            Console.WriteLine($"test {count} passed");
+            
+            count++;
+        }
+    }
+
     public static void AddToScope(Scope scope)
     {
+        scope.Bind("print", new BuiltinFunction(1, 0, Stdlib.Print));
         scope.Bind("import", new BuiltinFunction(1, 1, Stdlib.Import));
+        scope.Bind("assert", new BuiltinFunction(1, 0, Stdlib.CreateAssert()));
     }
 }

@@ -7,13 +7,13 @@ namespace Muoa;
 
 internal class Program
 {
-    private const string VERSION = "0.3.1";
+    private const string VERSION = "0.4.0";
     
     public static int Main(string[] args) =>
         CommandLineApplication.Execute<Program>(args);
 
     [Option(LongName = "file", ShortName = "f", Description = "The file to execute")]
-    private string Input { get; }
+    private string? Input { get; } = null;
 
     [Option(LongName = "tokens", ShortName = "t", Description = "Show the generated lexer tokens")]
     private bool ShowTokens { get; } = false;
@@ -23,6 +23,12 @@ internal class Program
     
     private int OnExecute()
     {
+        if (Input == null)
+        {
+            Console.Error.WriteLine("No input file");
+            return 1;
+        }
+        
         string text;
         try
         {

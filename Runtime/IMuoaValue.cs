@@ -1,6 +1,8 @@
+using System.Diagnostics;
+
 namespace Muoa.Runtime;
 
-public interface IMuoaValue 
+public interface IMuoaValue : IEquatable<IMuoaValue>
 {
     public MuoaType Type();
     

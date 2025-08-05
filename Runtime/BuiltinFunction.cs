@@ -14,5 +14,7 @@ public class BuiltinFunction(int input, int output, Action<CallingContext> fun) 
     
     public (int, int) Signature() => (input, output);
     
+    public bool Equals(IMuoaValue? other) => Utils.DefaultValueEquals(other);
+
     public override string ToString() => $"<builtin function with signature {input}.{output}>";
 }

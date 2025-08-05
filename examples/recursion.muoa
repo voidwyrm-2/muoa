@@ -1,0 +1,6 @@
+\"hello" 'print !!
+
+\ this will infinitely recur
+(0 "hello" 'print !! 'test !!) 'test &
+
+'test !!
