@@ -6,7 +6,7 @@ Muoa, pronounced "mu-ya", is a very minimal stack-based array programming langua
 
 Muoa is unique from other array languages in that it exclusively uses ASCII characters.
 
-This is version 2 of the language specification.
+This is version 3 of the language specification.
 
 ## Terms
 
@@ -32,12 +32,26 @@ They are formatted as `"[content]"`.
 *Array* is an arraylist (or other appliciable data structure when needed) containing other data types, including itself.
 How they are formatted is up to the implementation to decide, but the Python or Golang styles should be preferred.
 
-*Function* is a pass-by-reference singleton containing either a list of nodes/instructions or a function written in the host language.
+*Function* is a pass-by-reference singleton containing either a list of nodes/instructions or a pointer to a function written in the host language.
 They are formatted as `<composite function with signature [input].[output]>` or `<builtin function with signature [input].[output]>`.
 
 *Module* is a hashmap[^2] containing key-value pairs where the key is a string and the value is any Muoa data type.
 They can be indexed into with atoms via `@`.
 How they are formatted is up to the implementation to decide, but the `<module containing N entries>` is preferred for simplicity.
+
+## Data type declaration
+
+Numbers are defined like they normally are, e.g. `2020`, `3.14159`, `1.3333333333333`.
+
+Atoms are defined with a leading single quote (`'`), e.g. `'deadbeef`, `'grahaTia`, `'yourMom`.
+
+Strings are also defined like they normally are, e.g. `"I am all of me"`, `"it's hard to see your face"`, `"don't you dare look back"`.
+
+Arrays are declared with square brackets, e.g. `[1 2 3 4]`, `[42]`, `[3.14, 1.43, 4.31]`.
+
+Functions are defined with a signature in the format `[inputs].[outputs]` inside of a pair of parentheses, e.g. `(2.1 ,||)`, `(1.1 (2.1 +) f)`, `(3.1 + +)`.
+
+Modules are simply any imported file, every binding inside of them is converted into a member of the module.
 
 ## Builtins
 
@@ -76,7 +90,7 @@ Some operations may have alternate versions that do different things and/or take
 - `?` - Pull/Hook - `{ -> a }` - Takes a value from the surrounding scope's stack, and pushes it onto the current scope's stack.
 - `s` - Switch - `{ num [...fun] -> }` - Takes in a number N and array Arr, indexes into Arr with N, then calls the result.
 
-## Standard Library
+## Standard library
 
 Muoa also has a set of built-in non-operation functions which are automatically loaded into the global scope at the start of runtime.
 
