@@ -7,8 +7,20 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+<!--
+  Needing internet to build the project is stupid,
+  and this allows me to version lock anyways
+-->
+  <ItemGroup>
+    <Reference Include="McMaster.Extensions.CommandLineUtils">
+      <HintPath>McMaster.Extensions.CommandLineUtils.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+<!--
   <ItemGroup>
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="4.1.1" />
   </ItemGroup>
+-->
 
 </Project>

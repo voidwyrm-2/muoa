@@ -55,10 +55,12 @@ for ost, arches in pairs(targets) do
         local cmdBuild = string.format("dotnet build --os %s --arch %s -o %s", ost, arch, bin)
         builder.add(cmdBuild)
 
-        local cmdMove = string.format("mv %s .", bin)
+        builder.add("mkdir " .. pair)
+
+        local cmdMove = string.format("mv %s/* %s", bin, pair)
         builder.add(cmdMove)
 
-        local cmdZip = string.format("zip -r pkg/%s/ %s", pair, pair)
+        local cmdZip = string.format("zip -r pkg/%s %s", pair, pair)
         builder.add(cmdZip)
 
         builder.add("rm -rf " .. pair .. "/")
