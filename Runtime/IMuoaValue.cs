@@ -38,9 +38,13 @@ public interface IMuoaValue : IEquatable<IMuoaValue>
     
     public IMuoaValue Pow(IMuoaValue other) =>
         this.InvalidBinaryOp(other, "pow");
-    
-    public IMuoaValue Join(IMuoaValue other) =>
-        this.InvalidBinaryOp(other, "join");
+
+    // isn't a parent knowing of its children an antipattern/code smell?
+    public IMuoaValue Join(IMuoaValue other) => other switch
+    {
+        MuoaArray arr => new MuoaArray(new[]{this}.Concat(arr).ToArray()),
+        _ => new MuoaArray([this, other])
+    };
     
     public IMuoaValue Negate() =>
         this.InvalidUnaryOp("negate");

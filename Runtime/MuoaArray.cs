@@ -36,7 +36,13 @@ public class MuoaArray(IMuoaValue[] value) : IMuoaValue, IEnumerable<IMuoaValue>
 
         return accScope.Pop();
     }
-    
+
+    public IMuoaValue Join(IMuoaValue other) => other switch
+    {
+        MuoaArray arr => new MuoaArray(_value.Concat(arr._value).ToArray()),
+        _ => new MuoaArray(_value.Append(other).ToArray()),
+    };
+
     public bool Equals(IMuoaValue? other) => other switch
     {
         null => throw new UnreachableException("null should not be passed to IMuoaValue::Equals"),
@@ -48,5 +54,5 @@ public class MuoaArray(IMuoaValue[] value) : IMuoaValue, IEnumerable<IMuoaValue>
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     
-    public override string ToString() => string.Join(", ", _value.Select(item => item.ToString()));
+    public override string ToString() => "["+ string.Join(", ", _value.Select(item => item.ToString())) + "]";
 }
