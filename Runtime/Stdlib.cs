@@ -9,7 +9,7 @@ public static class Stdlib
     {
         var items = ctx.scope.GetExpect([null]);
         
-        Console.WriteLine(items[0].Value());
+        Console.WriteLine(items[0] is MuoaString str ? str.AsString() : items[0].Value());
     }
     
     public static void Import(CallingContext ctx)
@@ -47,20 +47,20 @@ public static class Stdlib
 
     private static Action<CallingContext> CreateAssert()
     {
-        int count = 1;
+        int count = 0;
 
         return MuoaAssert;
         
         void MuoaAssert(CallingContext ctx)
         {
+            count++;
+            
             var items = ctx.scope.GetExpect([MuoaType.Number]);
 
             if ((double)items[0].Value() == 0)
                 throw new RuntimeException($"test {count} failed");
             
             Console.WriteLine($"test {count} passed");
-            
-            count++;
         }
     }
 

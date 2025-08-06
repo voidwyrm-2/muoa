@@ -6,7 +6,7 @@ public class BuiltinFunction(int input, int output, Action<CallingContext> fun) 
 
     public IMuoaValue Copy() => this;
     
-    public IMuoaValue Default() => throw new NotImplementedException();
+    public IMuoaValue Default() => new CompositeFunction(0, 0, []);
 
     public object Value() => fun;
 

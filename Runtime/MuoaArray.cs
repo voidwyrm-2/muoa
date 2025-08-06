@@ -18,35 +18,16 @@ public class MuoaArray(IMuoaValue[] value) : IMuoaValue, IEnumerable<IMuoaValue>
 
     public IMuoaValue Length() => new MuoaNumber(_value.Length);
 
-    public IMuoaValue Fold(CallingContext ctx, IMuoaFunction fun)
-    {
-        fun.ExpectSignature(2, 1);
-        
-        Scope accScope = new(ctx.scope, true);
-
-        bool evenLength = _value.Length % 2 == 0;
-
-        accScope.Push(evenLength ? _value[0] : _value[0].Default());
-
-        for (int i = evenLength ? 1 : 0; i < _value.Length; i += 1)
-        {
-            accScope.Push(_value[i]);
-            fun.Call(new CallingContext(ctx.builtins, accScope, true));
-        }
-
-        return accScope.Pop();
-    }
-
     public IMuoaValue Join(IMuoaValue other) => other switch
     {
-        MuoaArray arr => new MuoaArray(_value.Concat(arr._value).ToArray()),
+        IEnumerable<IMuoaValue> arr => new MuoaArray(_value.Concat(arr).ToArray()),
         _ => new MuoaArray(_value.Append(other).ToArray()),
     };
 
     public bool Equals(IMuoaValue? other) => other switch
     {
         null => throw new UnreachableException("null should not be passed to IMuoaValue::Equals"),
-        MuoaArray arr => this.Zip(arr).All(tup => tup.First.Equals(tup.Second)),
+        IEnumerable<IMuoaValue> arr => this.Zip(arr).All(tup => tup.First.Equals(tup.Second)),
         _ => _value.All(item => item.Equals(other))
     };
 

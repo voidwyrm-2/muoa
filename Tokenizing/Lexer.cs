@@ -22,6 +22,7 @@ public class Lexer
             Number,
             String,
             Atom,
+            Deatom,
             Fold,
             Length,
             Index,
@@ -45,7 +46,6 @@ public class Lexer
             BracketLeft,
             BracketRight,
             Execute,
-            Bind,
             Slice,
             Join,
             Pull,
@@ -59,6 +59,7 @@ public class Lexer
                 Type.Number => lit,
                 Type.String => $"\"{lit}\"",
                 Type.Atom => $"'{lit}",
+                Type.Deatom => $",{lit}",
                 Type.Fold => "f",
                 Type.Length => "#",
                 Type.Index => "@",
@@ -82,7 +83,6 @@ public class Lexer
                 Type.BracketLeft => "[",
                 Type.BracketRight => "]",
                 Type.Execute => "!",
-                Type.Bind => "&",
                 Type.Slice => "$",
                 Type.Join => "|",
                 Type.Pull => "?",
@@ -91,7 +91,7 @@ public class Lexer
             };
         }
 
-        public void Error<T>(string msg) where T : MuoaException, new()
+        public void Error<T>(string msg) where T : MuoaException
         {
             StringBuilder builder = new($"{msg}\n{ctx.file}:{ln}:{col}\n{ctx.line}\n");
 
@@ -188,7 +188,6 @@ public class Lexer
         '[' => Token.Type.BracketLeft,
         ']' => Token.Type.BracketRight,
         '!' => Token.Type.Execute,
-        '&' => Token.Type.Bind,
         '$' => Token.Type.Slice,
         '|' => Token.Type.Join,
         '?' => Token.Type.Pull,
@@ -196,8 +195,10 @@ public class Lexer
         _ => null,
     };
 
-    private Token CollectAtom()
+    private Token CollectAtom(bool deatom)
     {
+        Token.Type type = deatom ? Token.Type.Deatom : Token.Type.Atom;
+        
         int startidx = _idx;
         int startcol = _col;
         int startln = _ln;
@@ -208,13 +209,13 @@ public class Lexer
 
         Advance();
 
-        while (!Eof && Ch is >= 'a' and <= 'z' or >= 'A' and <= 'Z')
+        while (!Eof && char.IsAsciiLetter(Ch))
         {
             str.Append(Ch);
             Advance();
         }
 
-        if (str.Length == 0 && Lexer.GetTokenType(Ch) != null)
+        if (str.Length == 0 && !char.IsAsciiLetter(Ch))
         {
             str.Append(Ch);
             Advance();
@@ -222,11 +223,11 @@ public class Lexer
 
         if (str.Length == 0)
         {
-            Token t = new(Token.Type.Atom, new Token.Ctx(_file, origLine, origLineStart), str.ToString(), startidx, str.Length, startln, startcol);
+            Token t = new(type, new Token.Ctx(_file, origLine, origLineStart), str.ToString(), startidx, str.Length + 1, startln, startcol);
             t.Error<LexerException>("Atoms cannot contain zero characters");
         }
         
-        return new Token(Token.Type.Atom, new Token.Ctx(_file, origLine, origLineStart), str.ToString(), startidx, str.Length, startln, startcol);
+        return new Token(type, new Token.Ctx(_file, origLine, origLineStart), str.ToString(), startidx, str.Length + 1, startln, startcol);
     }
     
     private Token CollectNumber()
@@ -308,13 +309,13 @@ public class Lexer
 
         if (Eof || Ch != '"')
         {
-            Token t = new(Token.Type.String, new Token.Ctx(_file, origLine, origLineStart), str.ToString(), startidx, str.Length, startln, startcol);
+            Token t = new(Token.Type.String, new Token.Ctx(_file, origLine, origLineStart), str.ToString(), startidx, str.Length + 2, startln, startcol);
             t.Error<LexerException>("Unterminated string literal");
         }
 
         Advance();
         
-        return new Token(Token.Type.String, new Token.Ctx(_file, origLine, origLineStart), str.ToString(), startidx, str.Length, startln, startcol); 
+        return new Token(Token.Type.String, new Token.Ctx(_file, origLine, origLineStart), str.ToString(), startidx, str.Length + 2, startln, startcol); 
     }
     
     public Token[] Lex()
@@ -338,9 +339,9 @@ public class Lexer
             {
                 tokens.Add(CollectString());
             }
-            else if (ch == '\'')
+            else if (ch == '\'' || ch == ',')
             {
-                tokens.Add(CollectAtom());
+                tokens.Add(CollectAtom(ch == ','));
             }
             else if (char.IsAsciiDigit(ch))
             {
@@ -353,7 +354,7 @@ public class Lexer
             }
             else
             {
-                Throw($"Invalid character '{ch}'");
+                Throw($"Illegal character '{ch}'");
             }
         }
         

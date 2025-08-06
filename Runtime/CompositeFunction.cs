@@ -7,7 +7,7 @@ public class CompositeFunction(int input, int output, INode[] nodes) : IMuoaFunc
     public CompositeFunction(FunctionNode node) : this(node.input, node.output, node.nodes) { }
     
     public (int, int) Signature() => (input, output);
-    
+
     public MuoaType Type() => MuoaType.Function;
 
     public IMuoaValue Copy() => this;
@@ -19,11 +19,11 @@ public class CompositeFunction(int input, int output, INode[] nodes) : IMuoaFunc
     public void Call(CallingContext ctx)
     {
         Scope innerScope = ctx.direct ? ctx.scope : new Scope(ctx.scope, true);
+        
+        innerScope.Bind("me", this);
+        Stdlib.AddToScope(innerScope);
 
-        var inputs = new IMuoaValue[input];
-
-        for (int i = 0; i < input; i++)
-            inputs[i] = ctx.scope.Pop();
+        var inputs = ctx.scope.GetExpect(new MuoaType?[input]);
 
         foreach (IMuoaValue value in inputs.Reverse())
             innerScope.Push(value);
@@ -32,10 +32,10 @@ public class CompositeFunction(int input, int output, INode[] nodes) : IMuoaFunc
 
         interpreter.Eval(nodes);
         
-        innerScope.Expect(new MuoaType?[output]);
+        var outputs = innerScope.GetExpect(new MuoaType?[output]);
         
-        for (int i = 0; i < output; i++)
-            ctx.scope.Push(innerScope.Pop());
+        foreach (IMuoaValue value in outputs.Reverse())
+            ctx.scope.Push(value);
     }
 
     public bool Equals(IMuoaValue? other) => Utils.DefaultValueEquals(other);

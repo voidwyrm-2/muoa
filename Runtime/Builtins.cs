@@ -87,7 +87,23 @@ public static class Builtins
 
         IMuoaFunction fun = (IMuoaFunction)items[0];
         
-        ctx.scope.Push(items[1].Fold(ctx, fun));
+        fun.ExpectSignature(2, 1);
+        
+        var arr = (IMuoaValue[])items[1].Value();
+        
+        Scope accScope = new(ctx.scope, true);
+
+        bool evenLength = arr.Length % 2 == 0;
+
+        accScope.Push(evenLength ? arr[0] : arr[0].Default());
+
+        for (int i = evenLength ? 1 : 0; i < arr.Length; i += 1)
+        {
+            accScope.Push(arr[i]);
+            fun.Call(new CallingContext(ctx.builtins, accScope, true));
+        }
+
+        ctx.scope.Push(accScope.Pop());
     }
     
     private static void Length(CallingContext ctx)
@@ -134,35 +150,13 @@ public static class Builtins
     private static void Drop(CallingContext ctx) =>
         ctx.scope.GetExpect([null]);
 
-    private static void Bind(CallingContext ctx)
-    {
-        var items = ctx.scope.GetExpect([MuoaType.Atom, null]);
-
-        IMuoaValue name = items[0];
-        IMuoaValue value = items[1];
-        
-        ctx.scope.Bind((string)name.Value(), value);
-    }
-    
     private static void Execute(CallingContext ctx)
     {
-        var items = ctx.scope.GetExpect([null]);
+        var items = ctx.scope.GetExpect([MuoaType.Function]);
 
-        IMuoaValue value = items[0];
+        IMuoaFunction func = (IMuoaFunction)items[0];
 
-        switch (value)
-        {
-            case IMuoaFunction func:
-                func.Call(ctx);
-                break;
-            case MuoaAtom atom:
-                ctx.scope.Push(ctx.scope.Get((string)atom.Value()));
-                break;
-            default:
-                // Manually throw an exception for the incorrect type because
-                // Scope::Expect doesn't have a way to specify multiple allowed types
-                throw new RuntimeException($"Expected {MuoaType.Function} or {MuoaType.Atom} in position 1 on the stack, but found {value.Type()} instead");
-        }
+        func.Call(ctx);
     }
 
     private static void Switch(CallingContext ctx)
@@ -214,7 +208,6 @@ public static class Builtins
         map[Token.Type.Over] = new BuiltinFunction(2, 3, Builtins.Over);
         map[Token.Type.Drop] = new BuiltinFunction(1, 2, Builtins.Drop);
         
-        map[Token.Type.Bind] = new BuiltinFunction(1, 2, Builtins.Bind);
         map[Token.Type.Execute] = new BuiltinFunction(1, 0, Builtins.Execute);
         
         map[Token.Type.Switch] = new BuiltinFunction(2, 0, Builtins.Switch);

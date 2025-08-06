@@ -7,10 +7,13 @@ namespace Muoa;
 
 internal class Program
 {
-    private const string VERSION = "0.4.1";
+    private const string VERSION = "0.5.3";
     
     public static int Main(string[] args) =>
         CommandLineApplication.Execute<Program>(args);
+    
+    [Option(LongName = "version", ShortName = "v", Description = "Show the current Muoa version")]
+    private bool ShowVersion { get; } = false;
 
     [Option(LongName = "file", ShortName = "f", Description = "The file to execute")]
     private string? Input { get; } = null;
@@ -23,6 +26,12 @@ internal class Program
     
     private int OnExecute()
     {
+        if (ShowVersion)
+        {
+            Console.WriteLine($"Muoa Version {Program.VERSION}");
+            return 0;
+        }
+        
         if (Input == null)
         {
             Console.Error.WriteLine("No input file");

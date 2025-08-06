@@ -1,6 +1,4 @@
-\"hello" 'print !!
-
 \ this will infinitely recur
-(0 "hello" 'print !! 'test !!) 'test &
+(1 . ,print! 1+ ,me!) 'test
 
-'test !!
+0 ,test!

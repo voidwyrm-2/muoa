@@ -47,7 +47,7 @@ public class Scope(Scope? parent, bool function)
         if (_bindings.TryGetValue(name, out IMuoaValue? value))
             return value;
 
-        if (parent != null)
+        if (parent != null && !function)
             return parent.Get(name);
         
         throw new RuntimeException($"'{name}' does not exist");

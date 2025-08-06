@@ -18,9 +18,6 @@ public interface IMuoaValue : IEquatable<IMuoaValue>
     public IMuoaValue Index(IMuoaValue index) =>
         this.InvalidIndexingOp(index);
 
-    public IMuoaValue Fold(CallingContext ctx, IMuoaFunction fun) =>
-        this.InvalidUnaryOp("reduce");
-    
     public IMuoaValue Add(IMuoaValue other) =>
         this.InvalidBinaryOp(other, "add");
     

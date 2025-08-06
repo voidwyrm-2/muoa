@@ -70,6 +70,7 @@ public class Parser(Token[] tokens)
                 Token.Type.Number => new NumberNode(tok),
                 Token.Type.String => new StringNode(tok),
                 Token.Type.Atom => new AtomNode(tok),
+                Token.Type.Deatom => new DeatomNode(tok),
                 Token.Type.ParenLeft => ParseFunction(tok),
                 Token.Type.BracketLeft => ParseArray(tok),
                 _ => new OperationNode(tok)

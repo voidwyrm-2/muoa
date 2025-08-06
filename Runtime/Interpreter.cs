@@ -21,7 +21,18 @@ public class Interpreter(Scope? scope, Dictionary<Lexer.Token.Type, IMuoaFunctio
                         Scope.Push(new MuoaNumber(double.Parse(num.value.lit)));
                         break;
                     case AtomNode atom:
-                        Scope.Push(new MuoaAtom(atom.value.lit));
+                    {
+                        var items = Scope.GetExpect([null]);
+                        
+                        Scope.Bind(atom.value.lit, items[0]);
+                    }
+                        break;
+                    case DeatomNode deatom:
+                    {
+                        IMuoaValue value = Scope.Get(deatom.value.lit);
+                        
+                        Scope.Push(value);
+                    }
                         break;
                     case StringNode str:
                         Scope.Push(new MuoaString(str.value.lit));
@@ -35,7 +46,7 @@ public class Interpreter(Scope? scope, Dictionary<Lexer.Token.Type, IMuoaFunctio
                         Scope = Scope.parent!;
 
                         var arrayResult = result.Reverse().ToArray();
-                        Scope.Push(new MuoaArray(arrayResult!));
+                        Scope.Push(new MuoaArray(arrayResult));
                     }
                         break;
                     case FunctionNode func:

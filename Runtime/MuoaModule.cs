@@ -12,10 +12,11 @@ public class MuoaModule(Dictionary<string, IMuoaValue> inner) : IMuoaValue
 
     public IMuoaValue Index(IMuoaValue index) => index switch
     {
-        MuoaAtom atom => inner[(atom.Value() as string)!],
         _ => this.InvalidIndexingOp(index)
     };
-    
+
+    public IMuoaValue Length() => new MuoaNumber(inner.Count);
+
     public bool Equals(IMuoaValue? other) => Utils.DefaultValueEquals(other);
 
     public override string ToString() => $"<module with {inner.Count} entries>";
