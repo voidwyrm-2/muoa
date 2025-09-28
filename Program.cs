@@ -7,7 +7,7 @@ namespace Muoa;
 
 internal class Program
 {
-    private const string VERSION = "0.5.3";
+    private const string VERSION = "0.5.4";
     
     public static int Main(string[] args) =>
         CommandLineApplication.Execute<Program>(args);

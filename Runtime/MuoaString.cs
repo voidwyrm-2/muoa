@@ -16,7 +16,9 @@ public class MuoaString(byte[] value) : IMuoaValue, IEnumerable<byte>, IEnumerab
     public IMuoaValue Default() => new MuoaString(Array.Empty<byte>());
 
     public object Value() => _value;
-    
+
+    public IMuoaValue Length() => new MuoaNumber(_value.Length);
+
     public bool Equals(IMuoaValue? other) => other switch
     {
         MuoaString str => AsString() == str.AsString(),
@@ -25,10 +27,11 @@ public class MuoaString(byte[] value) : IMuoaValue, IEnumerable<byte>, IEnumerab
 
     public IEnumerator<byte> GetEnumerator() => (IEnumerator<byte>)_value.GetEnumerator();
 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
     IEnumerator<IMuoaValue> IEnumerable<IMuoaValue>.GetEnumerator() =>
-        (IEnumerator<IMuoaValue>)this.Select<byte, IMuoaValue>(ch => new MuoaNumber(ch));
+        this.Select<byte, IMuoaValue>(ch => new MuoaNumber(ch))
+            .GetEnumerator();
+    
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     
     public string AsString() => Encoding.Default.GetString(_value);
     

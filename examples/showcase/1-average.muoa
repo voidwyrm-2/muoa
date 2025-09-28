@@ -1,0 +1,4 @@
+[1 5 8 2]
+.(2.1+)f: \ Duplicate and sum array
+#         \ Get length
+/         \ Divide sum by length

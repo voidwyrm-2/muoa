@@ -71,7 +71,7 @@ for example, a function that takes an array containing any value and a number an
 
 Some operations may have alternate versions that do different things and/or take and output different values.
 
-Operations, unless otherwise stated, do not apply to the items of arrays like `map`.
+Operations, unless otherwise stated, do not apply to the items of arrays like a `map` function.
 
 - `+` - Add - `{ a b -> a + b }` - Takes in two values, adds them together, then outputs the result. Maps to arrays.
 - `-` - Subtract - `{ a b -> a - b }` - Takes in two values, subtracts one from the other, then outputs the result. Maps to arrays.
